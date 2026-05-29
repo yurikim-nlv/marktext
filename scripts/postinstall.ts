@@ -153,7 +153,11 @@ run(`"${patchPackageBin}"`, { cwd: desktopRoot })
 
 // ── 4. Rebuild native modules for Electron ABI ──────────────────────────────
 console.log('Rebuilding native modules for Electron...')
-run(`"${electronRebuildBin}" -f`, { cwd: desktopRoot })
+try {
+  run(`"${electronRebuildBin}" -f`, { cwd: desktopRoot })
+} catch (e) {
+  console.warn('electron-rebuild failed (native-keymap is optional, continuing):', e.message)
+}
 
 // ── 5. Generate minified locale files ───────────────────────────────────────
 console.log('Minifying locales...')
