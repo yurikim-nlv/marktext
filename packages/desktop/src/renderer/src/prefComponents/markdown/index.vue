@@ -51,6 +51,11 @@
           :on-change="(value) => onSelectChange('frontmatterType', value)"
         />
         <bool
+          :description="t('preferences.markdown.extensions.inlineMath')"
+          :bool="inlineMath"
+          :on-change="(value) => onSelectChange('inlineMath', value)"
+        />
+        <bool
           :description="t('preferences.markdown.extensions.superSubScript')"
           :bool="superSubScript"
           :on-change="(value) => onSelectChange('superSubScript', value)"
@@ -150,6 +155,7 @@ const {
   preferHeadingStyle,
   listIndentation,
   frontmatterType,
+  inlineMath,
   superSubScript,
   footnote,
   isHtmlEnabled,

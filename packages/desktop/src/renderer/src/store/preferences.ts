@@ -75,6 +75,7 @@ export interface PreferencesState {
   tabSize: number
   listIndentation: number
   frontmatterType: FrontmatterType | string
+  inlineMath: boolean
   superSubScript: boolean
   footnote: boolean
   isHtmlEnabled: boolean
@@ -190,6 +191,7 @@ export const usePreferencesStore = defineStore('preferences', {
     tabSize: 4,
     listIndentation: 1,
     frontmatterType: '-',
+    inlineMath: false,
     superSubScript: false,
     footnote: false,
     isHtmlEnabled: true,

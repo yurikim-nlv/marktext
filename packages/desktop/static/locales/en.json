@@ -448,6 +448,7 @@
         "tabSize": "Replace the tab with x spaces",
         "listIndentation": "Select the indent of list",
         "frontmatterType": "The frontmatter type",
+        "inlineMath": "Enable inline math rendering ($ delimiters)",
         "superSubScript": "Enable pandoc's markdown extension superscript and subscript",
         "footnote": "Enable pandoc's markdown extension footnote",
         "isHtmlEnabled": "Enable HTML rendering",
@@ -739,6 +740,7 @@
       },
       "extensions": {
         "title": "Extensions",
+        "inlineMath": "Inline math ($ delimiters)",
         "superSubScript": "Super/Sub script",
         "footnote": "Footnote",
         "isHtmlEnabled": "HTML enabled",

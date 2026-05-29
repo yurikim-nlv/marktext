@@ -257,6 +257,11 @@
     "enum": ["-", "+", ";", "{"],
     "default": "-"
   },
+  "inlineMath": {
+    "description": "Markdown-Enable inline math rendering ($ delimiters).",
+    "type": "boolean",
+    "default": false
+  },
   "superSubScript": {
     "description": "Markdown-Enable pandoc's markdown extension superscript and subscript.",
     "type": "boolean",

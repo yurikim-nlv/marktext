@@ -334,6 +334,7 @@ const copyCutCtrl = (ContentState) => {
           event.clipboardData.setData(
             'text/plain',
             getSanitizeHtml(text, {
+              math: !!this.muya.options.inlineMath,
               superSubScript: this.muya.options.superSubScript,
               footnote: this.muya.options.footnote,
               isGitlabCompatibilityEnabled: this.muya.options.isGitlabCompatibilityEnabled

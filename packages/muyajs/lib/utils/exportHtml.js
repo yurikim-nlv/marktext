@@ -132,6 +132,7 @@ class ExportHtml {
   async renderHtml(toc) {
     this.mathRendererCalled = false
     let html = marked(this.markdown, {
+      math: this.muya ? !!this.muya.options.inlineMath : false,
       superSubScript: this.muya ? this.muya.options.superSubScript : false,
       footnote: this.muya ? this.muya.options.footnote : false,
       isGitlabCompatibilityEnabled: this.muya
