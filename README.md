@@ -98,6 +98,41 @@
 
 <br />
 
+---
+
+## Fork Notice (Next Ladder)
+
+This is a **fork** of [marktext/marktext](https://github.com/marktext/marktext) maintained by Next Ladder.
+
+**Branch:** `feature/inline-math-toggle`
+
+### What changed
+
+Added an **Inline Math** toggle in Preferences > Markdown > Extensions. When off (the default), `$...$` is treated as plain text instead of rendering as KaTeX math. This prevents dollar signs in research outputs, financial data, and general prose from being misinterpreted as math delimiters. Block math (`$$...$$`) is unaffected.
+
+### Current status
+
+- All code changes are complete and committed (preference plumbing, parser, settings UI, export/clipboard)
+- The app **builds successfully** on Windows (`pnpm build` + `electron-builder --dir`)
+- **Known issue:** The packaged `.exe` crashes on launch with `Could not find @vscode/ripgrep-win32-x64` — a pnpm monorepo hoisting issue where the platform-specific optional dependency isn't bundled into the asar. See [CLAUDE.md](CLAUDE.md) for detailed next steps.
+- `pnpm run dev` (electron-vite dev mode) has not yet been tested and may work without the packaging issue.
+
+### Build from source (Windows)
+
+```bash
+# Prerequisites: Node.js >= 20.19, pnpm >= 10, VS 2022 Build Tools (C++ workload),
+# Windows Developer Mode enabled
+
+git clone https://github.com/yurikim-nlv/marktext.git
+cd marktext
+git checkout feature/inline-math-toggle
+pnpm install
+pnpm run dev          # development mode
+pnpm run build:win    # packaged build (has ripgrep issue — see CLAUDE.md)
+```
+
+---
+
 <h2 align="center">Sponsors</h2>
 
 MarkText is an open-source Markdown editor powered by the support of its community. If MarkText improves your workflow, please consider [sponsoring the project](https://github.com/sponsors/marktext). Thank you to all the sponsors ❤️

@@ -2,6 +2,88 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+# Fork Status (NLV)
+
+This is a **fork** of marktext/marktext at https://github.com/yurikim-nlv/marktext.
+Branch: `feature/inline-math-toggle` (based on upstream `develop`).
+
+## What We Changed
+
+Added an `inlineMath` boolean preference (default: **false**) that controls whether
+`$...$` is parsed as inline KaTeX math. When off (default), `$` is treated as plain
+text — no accidental math rendering on dollar amounts or other `$`-containing content.
+
+### Files modified (2 commits)
+
+**Preference plumbing (11 files):**
+- `packages/desktop/src/main/preferences/schema.json` — added `inlineMath` boolean
+- `packages/desktop/static/preference.json` — default value
+- `packages/desktop/src/renderer/src/store/preferences.ts` — store interface + default
+- `packages/desktop/src/shared/types/preferences.ts` — `IUserPreferences` type
+- `packages/desktop/static/locales/en.json` — i18n strings (2 locations)
+- `packages/desktop/src/renderer/src/prefComponents/markdown/index.vue` — toggle in settings UI
+- `packages/desktop/src/renderer/src/components/editorWithTabs/editor.vue` — ref, watcher, initial options
+- `packages/muyajs/lib/parser/index.js` — conditionally skip `inline_math` tokenization
+- `packages/muyajs/lib/parser/marked/options.js` — changed `math` default to `false`
+- `packages/muyajs/lib/utils/exportHtml.js` — pass `math` flag from `inlineMath` option
+- `packages/muyajs/lib/contentState/copyCutCtrl.js` — pass `math` flag on clipboard export
+
+**Build fix (1 file):**
+- `scripts/postinstall.ts` — wrapped `electron-rebuild` in try/catch so `native-keymap`
+  build failure (optional dep) doesn't block install
+
+### How the preference flows
+
+```
+schema.json → Pinia store (preferences.ts) → editor.vue watcher
+  → Muya.setOptions({ inlineMath }) → tokenizer options → parser skips inline_math rule
+  → marked renderer gets math: false → export/clipboard also respect the flag
+```
+
+Block math (`$$...$$`) is **not** affected by this toggle.
+
+## Known Build Issues (Windows)
+
+The app builds (`pnpm build` succeeds, `electron-builder --dir` produces `dist/win-unpacked/`)
+but the packaged app crashes on launch with:
+
+```
+Error: Could not find @vscode/ripgrep-win32-x64
+```
+
+**Root cause:** pnpm's monorepo hoisting doesn't place `@vscode/ripgrep-win32-x64`
+(a platform-specific optional dependency of `@vscode/ripgrep`) inside the desktop
+package's `node_modules`. electron-builder bundles `node_modules` from
+`packages/desktop/` into the asar, so the platform binary is missing at runtime.
+
+**Attempted fix:** Manually copying `ripgrep-win32-x64` from the pnpm store into
+`packages/desktop/node_modules/@vscode/` before packaging. This didn't resolve
+the issue — the asar likely still doesn't include it correctly, or the require
+path resolves differently inside the packed app.
+
+**Next steps to try:**
+1. Add `@vscode/ripgrep-win32-x64` as an explicit dependency in `packages/desktop/package.json`
+   so pnpm installs it directly (not just as an optional transitive dep)
+2. Use electron-builder's `extraResources` or `files` config to explicitly include
+   the ripgrep binary from the pnpm store
+3. Check if `pnpm run dev` works (electron-vite dev mode) — the ripgrep binary
+   may resolve correctly when not packaged into an asar
+4. Install Spectre-mitigated libraries for MSVC so `native-keymap` also compiles
+   (currently skipped; requires running VS installer with admin — UAC prompt wasn't
+   reaching the user in our session)
+
+## Build Environment Requirements (Windows)
+
+- Node.js >= 20.19.0 (tested with 24.16.0)
+- pnpm >= 10 (`npm install -g pnpm@10.33.4`)
+- Python (available as `py` on this machine)
+- Visual Studio 2022 Build Tools with "Desktop development with C++" workload
+  - Also needs: Spectre-mitigated libraries (component `Microsoft.VisualStudio.Component.VC.14.44.17.14.x86.x64.Spectre`)
+    for `native-keymap` — **currently not installed**; app works without it
+- Windows Developer Mode enabled (for symlink support during electron-builder packaging)
+
+---
+
 # MarkText
 
 ## Project Overview
